@@ -1,0 +1,19 @@
+Terraform block and provider block
+
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "5.39.1"
+    }
+  }
+}
+
+
+Providerblock
+
+provider "aws" {
+  region  = "eu-central-1"
+  profile = "surya"
+}
+
