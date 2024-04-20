@@ -1,0 +1,46 @@
+Load balancer
+
+"aws_security_group" 
+
+
+
+aws_vpc_security_group_ingress_rule" "allow-port-80_public" {
+
+"aws_vpc_security_group_ingress_rule" "allow-port-22_public" {
+
+"aws_vpc_security_group_egress_rule" "egress_rule" {
+
+
+"aws_instance" "pub-ec2-1a" {
+
+"aws_instance" "pub-ec2-1b" {
+
+
+"aws_security_group" "private-sg" {
+
+aws_vpc_security_group_ingress_rule" "allow_port_80_private" {
+
+"aws_vpc_security_group_ingress_rule" "allow_port_22_private" {
+
+
+
+
+aws_vpc_security_group_egress_rule" "allow_port_all_private" {
+
+"aws_instance" "pri-ec2-1a" {
+
+aws_instance" "pri-ec2-1b" {
+
+
+"aws_lb_target_group" "My-tg" {
+
+
+
+"aws_lb_target_group_attachment" "My-tg-attachment" {
+
+"aws_lb" "My_alb" {
+
+
+"aws_lb_listener" "my_alb_listener" {
+
+
