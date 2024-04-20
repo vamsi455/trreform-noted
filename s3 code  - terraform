@@ -1,0 +1,132 @@
+
+provider "aws" {
+  region = "us-west-2"
+}
+
+resource "aws_s3_bucket" "my-test-bucket" {
+  bucket = "my-test-bucket"
+  acl = "private"
+  versioning {
+    enabled = true
+  }
+  tags =  {
+      Name = "21-days-of-aws-using-terraform"
+  }
+}
+wrong
+
+root@ip-172-31-10-137:~/s3# terraform validate
+╷
+│ Warning: Argument is deprecated
+│ 
+│   with aws_s3_bucket.my-test-bucket,
+│   on resource.tf line 1, in resource "aws_s3_bucket" "my-test-bucket":
+│    1: resource "aws_s3_bucket" "my-test-bucket" {
+│ 
+│ Use the aws_s3_bucket_versioning resource instead
+│ 
+│ (and one more similar warning elsewhere)
+╵
+Success! The configuration is valid, but there were some validation warnings as shown above.
+
+
+Use this
+
+resource "aws_s3_bucket" "example" {
+  bucket = "example-bucket"
+}
+
+resource "aws_s3_bucket_acl" "example" {
+  bucket = aws_s3_bucket.example.id
+  acl    = "private"
+}
+
+resource "aws_s3_bucket_versioning" "versioning_example" {
+  bucket = aws_s3_bucket.example.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+
+
+
+
+resource "aws_s3_bucket_accelerate_configuration"
+ "example" { bucket = aws_s3_bucket.mybucket.id status = "Enabled" }
+
+—----------------working—----------------------------------------------
+Resource .tf
+
+resource "aws_s3_bucket" "example" {
+  bucket = var.bucket-name
+}
+
+
+resource "aws_s3_bucket_versioning" "versioning_example" {
+  bucket = aws_s3_bucket.example.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+resource "aws_s3_bucket_accelerate_configuration" "example" {
+  bucket = aws_s3_bucket.example.id
+  status = "Enabled"
+}
+
+Provider.tf
+root@ip-172-31-10-137:~/s3# cat provider.tf 
+provider "aws" {
+  region  = "us-west-1"
+  profile = "surya"
+}
+
+
+
+
+vars.tf
+root@ip-172-31-10-137:~/s3# cat vars.tf 
+variable "bucket-name" {
+  description = "giving unique bucketname"
+  type        = string
+  default     = "example-74163778"
+}
+
+output.tf
+
+root@ip-172-31-10-137:~/s3# cat output.tf 
+output "s3-endpoint" {
+  description = "using this to get s3 end point"
+  value       = aws_s3_bucket.example.id
+}
+
+
+terraformblock.tf
+
+root@ip-172-31-10-137:~/s3# cat terraformblock.tf 
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "5.39.1"
+    }
+  }
+}
+
+
+
+
+Resources:
+
+
+Aws_s3_bucket” “bkt” 
+ 
+“Aws_s3_bucket_versioning” 
+
+“aws_s3_bucket_acceleartion_configuration” 
+
+
+Acl
+Lifecylcle
+
+bucketpolicy
