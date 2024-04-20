@@ -1,0 +1,159 @@
+Terraform launching instance 
+provider.tf
+
+provider "aws" {
+  region = "your_aws_region"
+  profile = “ surya”
+}
+
+resource.tf
+
+
+resource "aws_security_group" "mysg" {
+  name        = "allow_ssh_and_8080"
+  description = "Allow SSH and port 8080"
+  
+  tags = {
+    Name = "allow_ssh_and_8080_sg"
+  }
+  
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  
+  ingress {
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"  # This allows all protocols
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_instance" "instance1" {
+  ami           = "ami-0aafdae616ee7c9b7"
+  key_name      = "terraformkey"
+  instance_type = "t2.small"
+  security_groups = [aws_security_group.mysg.name]
+  
+  tags = {
+    Name = "instance-1"
+  }
+}
+
+
+ 
+
+AMi id should valid with region which is given in the provider block
+
+
+Make sure to place the egress block within the aws_security_group resource block, like the ingress blocks. This configuration should work without errors.
+
+
+
+AMi id should valid with region which is given in the provider block
+
+
+Resources
+Provider “aws” {
+region
+Ami
+Instancetype
+Keyname
+Securitygroup
+Availabiltyzone
+
+
+
+We are able to a launch a t2.small instance in us-west-1 keyname 
+8080 and 22
+
+
+I want to create 
+Output block—--securitygroupid , instanceid,volume,
+Variable block—-ami instancetypeavailabiltyzone 
+var.tf
+variable "aws-ami-id" {
+  description = " ami for instance"
+  type        = string
+  default     = "ami-0aafdae616ee7c9b7"
+}
+variable "aws-instancetype" {
+  description = "instancetype"
+  type        = string
+  default     = "t2.micro"
+}
+variable "aws-AZ" {
+  description = " AZ"
+  type        = string
+  default     = "us-west-1b"
+}
+
+
+
+outputblock.tf
+
+Output “instance-id” {
+      Value = “aws_instance.instance1.id”
+}
+
+Output “sgid” {
+      Value = “aws_security_group.imysg.id”
+}
+
+
+resource "aws_security_group" "mysg" {
+  name        = "allow_ssh_and_8080"
+  description = "Allow SSH and port 8080"
+  
+  tags = {
+    Name = "allow_ssh_and_8080_sg"
+  }
+  
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  
+  ingress {
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"  # This allows all protocols
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_instance" "instance1" {
+  ami           = var.aws-ami-id
+  key_name      = "terraformkey"
+  instance_type = var.aws-instancetype
+Availability_zone = var.aws-AZ
+  security_groups = [aws_security_group.mysg.name]
+  
+  tags = {
+    Name = "instance-1"
+  }
+}
+
+
+
+
+
