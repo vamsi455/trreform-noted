@@ -1,0 +1,120 @@
+
+1. **Bucket with Lifecycle Configuration**:
+   - A bucket named "example-74163778" is created.   
+   - Lifecycle configuration is added with two rules:
+     - "log" rule specifies transitioning objects in the "log/" prefix to STANDARD_IA after 30 days and to GLACIER after 60 days. Objects with tags "rule=log" and "autoclean=true" will be expired after 90 days.
+     - "tmp" rule specifies objects in the "tmp/" prefix to be expired on a specific date.
+
+
+
+—----------------------------------------------------------------------------working—------------
+root@ip-172-31-10-137:~/s3# cat resource.tf
+
+resource "aws_s3_bucket" "example" {
+  bucket = var.bucket-name
+}
+
+
+resource "aws_s3_bucket_versioning" "versioning_example" {
+  bucket = aws_s3_bucket.example.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+resource "aws_s3_bucket_accelerate_configuration" "example" {
+  bucket = aws_s3_bucket.example.id
+  status = "Enabled"
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "bucket-config" {
+  bucket = aws_s3_bucket.example.id
+
+  rule {
+    id = "log"
+
+    expiration {
+      days = 90
+    }
+
+    filter {
+      and {
+        prefix = "log/"
+
+        tags = {
+          rule      = "log"
+          autoclean = "true"
+        }
+      }
+    }
+
+    status = "Enabled"
+
+    transition {
+      days          = 30
+      storage_class = "STANDARD_IA"
+    }
+
+    transition {
+      days          = 60
+      storage_class = "GLACIER"
+    }
+  }
+
+  rule {
+    id = "tmp"
+
+    filter {
+      prefix = "tmp/"
+    }
+
+    expiration {
+      date = "2025-01-13T00:00:00Z"
+    }
+
+    status = "Enabled"
+  }
+}
+
+Aws_s3_bucket"
+Aws_s3_bucket_accelerate_configuration"
+Aws_s3_bucket_lifecycle_configuration
+aws_s3_bucket_versioning
+
+
+
+Rule 30 days —
+90—Glacier
+
+Logs
+–90
+Tmp–certain
+
+
+Rule {
+Id =log
+Expiration{
+
+Days = 90
+}
+Filter{
+Prefix = log/
+}
+Transition {
+Days =30
+Storage_class = standard _IA
+}
+Transition {
+Days =60
+Storage_class = Glacier
+}
+
+
+
+Rule {
+Id =tmp
+Expiration{
+Date = 
+}
+Filter{
+Prefix = tmp
+}
